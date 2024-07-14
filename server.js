@@ -4,7 +4,7 @@ const exphbs = require('express-handlebars');
 const routes = require('./controllers');
 const helpers = require('./utils/helpers');
 const sequelize = require('./config/connection');
-
+const { User, BlogPost } = require('./models');
 
 const app = express();
 const PORT = process.env.APP_PORT || 3001;
@@ -27,7 +27,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Use the routes defined in the controllers directory
 app.use(routes);
 
-// Start the server after syncing the database
-sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => console.log(`Now listening on port ${PORT}!`));
-});
+// Test the database connection
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection to database was successful.');
+
+    // Start the server after syncing the database
+    sequelize.sync({ force: false }).then(() => {
+      app.listen(PORT, () => console.log(`Now listening on port ${PORT}!`));
+    });
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
