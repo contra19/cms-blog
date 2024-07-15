@@ -35,7 +35,7 @@ BlogPost.init(
   },
   {
     sequelize,
-    modelName: 'blogpost',
+    modelName: 'BlogPost',
     tableName: 'blog_posts',
     timestamps: true,
     createdAt: 'date',
