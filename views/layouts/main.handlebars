@@ -16,13 +16,17 @@
     {{> header }}
 
     <!-- Flash Messages -->
-    <div class="container">
+    <div class="container" id="flash-container">
         {{#if successMessage}}
         <div class="alert alert-success flash-message">{{successMessage}}</div>
         {{/if}}
         {{#if errorMessage}}
         <div class="alert alert-danger flash-message">{{errorMessage}}</div>
-        {{/if}}
+        {{/if}}        
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
         {{{ body }}}
     </div>
 
