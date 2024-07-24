@@ -14,8 +14,13 @@ router.post('/register', async (req, res) => {
       password: req.body.password,
     });
 
-    req.flash('successMessage', 'User successfully registered. Please log in.');
-    res.redirect('/login');
+    // Automatically log in the user after successful registration
+    req.session.save(() => {
+      req.session.user_id = userData.userid;
+      req.session.logged_in = true;
+      req.flash('successMessage', 'You are now logged in!');
+      res.redirect('/dashboard');
+    });
   } catch (err) {
     res.status(400).json(err);
   }
@@ -34,16 +39,10 @@ router.post('/login', async (req, res) => {
       res.redirect('/login');
       return;
     }
-
-    // Log the input password and the stored hashed password
-    console.log('Input username:', req.body.username);
-    console.log('Input password:', req.body.password); // Note: Logging plain passwords is not secure
-    console.log('Stored hashed password:', userData.password);
-
+    
     // Compare the input password with the stored hashed password
     const validPassword = await bcrypt.compare(req.body.password, userData.password);
-    console.log('Password valid:', validPassword);
-
+    
     if (!validPassword) {
       console.log('Invalid password');
       req.flash('errorMessage', 'Incorrect username or password, please try again');
@@ -54,6 +53,7 @@ router.post('/login', async (req, res) => {
     req.session.save(() => {
       req.session.user_id = userData.userid;
       req.session.logged_in = true;
+      console.log('User logged in:', req.session.user_id);
       req.flash('successMessage', 'You are now logged in!');
       res.redirect('/dashboard');
     });
