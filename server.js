@@ -3,56 +3,60 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const session = require('express-session');
 const flash = require('connect-flash');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const routes = require('./controllers');
 const helpers = require('./utils/helpers');
 const sequelize = require('./config/connection');
-const { User, BlogPost } = require('./models');
-const dateHelper = require('./helpers/helpers');
 
 const app = express();
 const PORT = process.env.APP_PORT || 3001;
 
-// Session middleware setup
-app.use(session({
-  secret: process.env.SECRET_KEY,
-  resave: false,
-  saveUninitialized: true,
-}));
-
-// Flash middleware setup
-app.use(flash());
-
-// Middleware to pass flash messages to views
 app.use((req, res, next) => {
-  res.locals.successMessage = req.flash('successMessage');
+  console.log(`Incoming request: ${req.method} ${req.url}`);
   next();
 });
 
-// Create the Handlebars.js engine object including helpers and partials
+app.use(session({
+  secret: process.env.SECRET_KEY || 'SuperSecret',
+  store: new SequelizeStore({
+    db: sequelize,
+  }),
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 2 * 60 * 60 * 1000, // 2 hours
+  },
+}));
+
+app.use(flash());
+
+app.use((req, res, next) => {
+  res.locals.successMessage = req.flash('successMessage');
+  res.locals.errorMessage = req.flash('errorMessage');
+  res.locals.logged_in = req.session.logged_in;
+  res.locals.user_id = req.session.user_id;
+  next();
+});
+
 const hbs = exphbs.create({
-  helpers: dateHelper,
+  helpers: helpers,
   partialsDir: path.join(__dirname, 'views/partials'),
 });
 
-// Set the template engine to use Handlebars
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
-// Set the server to use the public directory for static assets
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Use the routes defined in the controllers directory
 app.use(routes);
 
-// Test the database connection
 sequelize
   .authenticate()
   .then(() => {
     console.log('Connection to database was successful.');
 
-    // Start the server after syncing the database
     sequelize.sync({ force: false }).then(() => {
       app.listen(PORT, () => console.log(`Now listening on port ${PORT}!`));
     });
