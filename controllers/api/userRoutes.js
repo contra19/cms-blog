@@ -1,33 +1,19 @@
 const router = require('express').Router();
-const { User } = require('../../models');
+const { User, BlogPost } = require('../../models');
 const bcrypt = require('bcrypt');
+const withAuth = require('../../middleware/auth');
 
-router.post('/', async (req, res) => {
-  try {
-    const userData = await User.create(req.body);
-
-    req.session.save(() => {
-      req.session.user_id = userData.id;
-      req.session.logged_in = true;
-
-      res.status(200).json(userData);
-    });
-  } catch (err) {
-    res.status(400).json(err);
-  }
-});
-
+// Registration route
 router.post('/register', async (req, res) => {
   try {
-    // Encrypt the password before saving the user
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const userData = await User.create({
       username: req.body.username,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
       email: req.body.email,
-      password: hashedPassword,
+      password: req.body.password,
     });
 
-    // Set a flash message and redirect to login
     req.flash('successMessage', 'User successfully registered. Please log in.');
     res.redirect('/login');
   } catch (err) {
@@ -35,41 +21,84 @@ router.post('/register', async (req, res) => {
   }
 });
 
+// Login route
 router.post('/login', async (req, res) => {
+  console.log('Login request received:', req.body);
+
   try {
     const userData = await User.findOne({ where: { username: req.body.username } });
 
     if (!userData) {
-      res.status(400).json({ message: 'Incorrect username or password, please try again' });
+      console.log('User not found');
+      req.flash('errorMessage', 'Incorrect username or password, please try again');
+      res.redirect('/login');
       return;
     }
 
-    const validPassword = await userData.checkPassword(req.body.password);
+    // Log the input password and the stored hashed password
+    console.log('Input username:', req.body.username);
+    console.log('Input password:', req.body.password); // Note: Logging plain passwords is not secure
+    console.log('Stored hashed password:', userData.password);
+
+    // Compare the input password with the stored hashed password
+    const validPassword = await bcrypt.compare(req.body.password, userData.password);
+    console.log('Password valid:', validPassword);
 
     if (!validPassword) {
-      res.status(400).json({ message: 'Incorrect username or password, please try again' });
+      console.log('Invalid password');
+      req.flash('errorMessage', 'Incorrect username or password, please try again');
+      res.redirect('/login');
       return;
     }
 
     req.session.save(() => {
-      req.session.user_id = userData.id;
+      req.session.user_id = userData.userid;
       req.session.logged_in = true;
-      
-      res.json({ user: userData, message: 'You are now logged in!' });
+      req.flash('successMessage', 'You are now logged in!');
+      res.redirect('/dashboard');
     });
 
   } catch (err) {
-    res.status(400).json(err);
+    console.log('Error during login:', err);
+    req.flash('errorMessage', 'An error occurred, please try again');
+    res.redirect('/login');
   }
 });
 
-router.post('/logout', (req, res) => {
+// Logout route
+router.get('/logout', (req, res) => {
   if (req.session.logged_in) {
     req.session.destroy(() => {
-      res.status(204).end();
+      res.redirect('/'); // Redirect to home page after logging out
     });
   } else {
     res.status(404).end();
+  }
+});
+
+// Dashboard route
+router.get('/dashboard', withAuth, async (req, res) => {
+  console.log('Dashboard route accessed');
+  try {
+    const user = await User.findByPk(req.session.user_id, {
+      include: [{ model: BlogPost }],
+    });
+
+    if (!user) {
+      req.flash('errorMessage', 'User not found');
+      res.redirect('/login');
+      return;
+    }
+
+    const userPosts = user.BlogPosts.map((post) => post.get({ plain: true }));
+
+    res.render('dashboard', {
+      logged_in: req.session.logged_in,
+      user_id: req.session.user_id,
+      posts: userPosts,
+    });
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 

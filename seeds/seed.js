@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const bcrypt = require('bcrypt');
 const { Sequelize } = require('sequelize');
 const dotenv = require('dotenv');
 const { User, BlogPost } = require('../models');
@@ -32,16 +31,13 @@ const seedDatabase = async () => {
 
     // Seed users and blog posts
     for (let i = 0; i < userData.length; i++) {
-      // Hash password for each user
-      const hashedPassword = await bcrypt.hash(userData[i].password, 10);
-
       // Create user record
       const user = await User.create({
         username: userData[i].username,
         firstname: userData[i].firstname,
         lastname: userData[i].lastname,
         email: userData[i].email,
-        password: hashedPassword,
+        password: userData[i].password, // The password will be hashed by the beforeCreate hook
       });
 
       // Create blog posts for the user

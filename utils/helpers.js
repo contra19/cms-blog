@@ -1,15 +1,9 @@
-module.exports = {
-  // Helper function returns a randomly generated book emoji
-  get_emoji: () => {
-    const randomNum = Math.random();
-    let book = "📗";
+const { format } = require('date-fns');
+const dateHelper = require('handlebars');
 
-    if (randomNum > 0.7) {
-      book = "📘";
-    } else if (randomNum > 0.4) {
-      book = "📙";
-    }
+// Handlebars helper for date formatting
+dateHelper.registerHelper('formatDate', function(date) {
+    return format(new Date(date), 'MMMM do yyyy, h:mm:ss a');
+});
 
-    return `<span for="img" aria-label="book">${book}</span>`;
-  },
-};
+module.exports = dateHelper;

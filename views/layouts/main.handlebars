@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +8,21 @@
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Your custom styles -->
-    <link rel="stylesheet" href="/path/to/your/styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
+
 <body>
     <!-- Header -->
     {{> header }}
 
-    <!-- Main Content -->
+    <!-- Flash Messages -->
     <div class="container">
+        {{#if successMessage}}
+        <div class="alert alert-success flash-message">{{successMessage}}</div>
+        {{/if}}
+        {{#if errorMessage}}
+        <div class="alert alert-danger flash-message">{{errorMessage}}</div>
+        {{/if}}
         {{{ body }}}
     </div>
 
@@ -25,6 +33,9 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Custom scripts -->
+    <script src="/js/flashMessages.js"></script>
 
 </body>
+
 </html>
