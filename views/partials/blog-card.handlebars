@@ -1,13 +1,14 @@
 <div class="col-md-4 mb-4">
   <div class="card blog-card">
     <div class="card-header blog-card-header bg-primary text-white">
-      <h5 class="card-title">{{title}}</h5>
+      <h5 class="card-title">
+        <a href="/post/{{blogid}}" class="text-white">{{title}}</a></h5>
     </div>
     <div class="card-body blog-card-body">
-      <p class="card-text">{{body}}</p>
+      <p class="card-text">{{body}}</p> 
     </div>
     <div class="card-footer blog-card-footer text-white">
-      <small>Created by {{user.username}} on {{format_date date}}</small>
+      <small>Posted by {{User.username}} on {{format_date date}}</small>
     </div>
   </div>
 </div>
