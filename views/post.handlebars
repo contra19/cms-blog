@@ -1,0 +1,39 @@
+<!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                {{> blog-details blog}}
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <h3>Comments</h3>
+                {{#each blog.comments}}
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <p>{{this.body}}</p>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <small>Comment by {{this.User.username}} on {{format_date this.date}}</small>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                {{#if logged_in}}
+                <form action="/api/comments" method="POST">
+                    <div class="form-group">
+                        <label for="comment">Leave a comment</label>
+                        <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+                    </div>
+                    <input type="hidden" name="post_id" value="{{blog.blogid}}">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+                {{else}}
+                <p>Please <a href="/login">login</a> to leave a comment.</p>
+                {{/if}}
+            </div>
+        </div>
+    </div>
