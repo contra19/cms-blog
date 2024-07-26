@@ -1,14 +1,24 @@
-<!-- Main Content -->
+ <!-- Main Content -->
     <div class="container mt-4">
         <div class="row">
             <div class="col-12">
-                {{> blog-details blog}}
+                <div class="card">
+                    <div class="card-header">
+                        <h2>{{blog.title}}</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>{{blog.body}}</p>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <small>Posted by {{blog.User.username}} on {{format_date blog.date}}</small>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row mt-4">
             <div class="col-12">
                 <h3>Comments</h3>
-                {{#each blog.comments}}
+                {{#each blog.Comments}}
                 <div class="card mb-2">
                     <div class="card-body">
                         <p>{{this.body}}</p>
