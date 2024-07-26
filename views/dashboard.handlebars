@@ -1,9 +1,12 @@
-<h2>My Blog Posts</h2>
+<h2 class="d-flex justify-content-between align-items-center">
+  My Blog Posts
+  <a href="/dashboard/new" class="btn btn-primary">Add New Blog Post</a>
+</h2>
 
 {{#each posts}}
 <div class="card mb-4">
   <div class="card-header">
-    <h3 class="card-title">{{this.title}}</h3>
+    <a href="/dashboard/edit/{{this.blogid}}" class="card-title h3">{{this.title}}</a>
   </div>
   <div class="card-body">
     <p class="card-text">{{this.body}}</p>
@@ -15,5 +18,3 @@
 {{else}}
 <p>No posts yet</p>
 {{/each}}
-
-<a href="/dashboard/new" class="btn btn-primary mb-4">Add New Blog Post</a>
