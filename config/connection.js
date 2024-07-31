@@ -6,7 +6,7 @@ let sequelize;
 if (process.env.DB_URL) {
   sequelize = new Sequelize(process.env.DB_URL, {
     dialect: 'postgres',
-    logging: console.log,
+    logging: false,
   });
 } else {
   sequelize = new Sequelize(
@@ -16,7 +16,7 @@ if (process.env.DB_URL) {
     {
       host: process.env.DB_HOST,
       dialect: 'postgres',
-      logging: console.log,
+      logging: false,
     }
   );
 }

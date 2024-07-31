@@ -1,14 +1,25 @@
-<div class="col-md-4 mb-4">
-  <div class="card blog-card">
-    <div class="card-header blog-card-header bg-primary text-white">
+<div class="col-12 mb-4 d-flex justify-content-center">
+  <div class="card blog-card" style="width: 80%;">
+    <div class="card-header blog-card-header bg-primary text-white d-flex justify-content-between">
+      {{#if isDashboard}}
       <h5 class="card-title">
-        <a href="/post/{{blogid}}" class="text-white">{{title}}</a></h5>
+        <a href="/dashboard/edit/{{blog.blogid}}" class="text-white">{{blog.title}}</a>
+      </h5>
+      {{else}}
+      <h5 class=" card-title">
+          <a href="/post/{{blog.blogid}}" class="text-white">{{blog.title}}</a>
+      </h5>
+      {{/if}}
+      {{#if isDashboard}}
+      <small>Posted on {{format_date blog.date}}</small>
+      {{else}}
+      <small>Posted by {{blog.User.username}} on {{format_date blog.date}}</small>
+      {{/if}}
     </div>
+    {{#unless isHome}}
     <div class="card-body blog-card-body">
-      <p class="card-text">{{body}}</p> 
+      <p class="card-text">{{blog.body}}</p>
     </div>
-    <div class="card-footer blog-card-footer text-white">
-      <small>Posted by {{User.username}} on {{format_date date}}</small>
-    </div>
+    {{/unless}}
   </div>
 </div>

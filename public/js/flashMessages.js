@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
               message.style.opacity = '0';
               setTimeout(() => {
                   message.remove();
-              }, 500); // Match this delay to the transition duration
-          }, 5000); // Change this value to set the duration the message is displayed (e.g., 3000ms = 3 seconds)
+              }, 500); // Transition duration
+          }, 5000); // Duration the message is displayed (e.g., 3000ms = 3 seconds)
       });
   }
 });

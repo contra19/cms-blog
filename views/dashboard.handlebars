@@ -3,18 +3,10 @@
   <a href="/dashboard/new" class="btn btn-primary">Add New Blog Post</a>
 </h2>
 
-{{#each posts}}
-<div class="card mb-4">
-  <div class="card-header">
-    <a href="/dashboard/edit/{{this.blogid}}" class="card-title h3">{{this.title}}</a>
-  </div>
-  <div class="card-body">
-    <p class="card-text">{{this.body}}</p>
-  </div>
-  <div class="card-footer text-muted">
-    <small>Posted on {{format_date this.date}}</small>
-  </div>
+<div class="row">
+  {{#each posts}}
+    {{> blog-card blog=this isHome=false isDashboard=true}}
+  {{else}}
+    <p>No posts yet</p>
+  {{/each}}
 </div>
-{{else}}
-<p>No posts yet</p>
-{{/each}}

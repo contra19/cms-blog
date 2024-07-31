@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (deleteButton) {
     deleteButton.addEventListener('click', function() {
       const postId = document.getElementById('delete-post-form').dataset.id;
-      console.log(`Attempting to delete post with id: ${postId}`);
+      console.log(`Attempting to delete post id: ${postId}`);
 
       fetch(`/dashboard/delete/${postId}`, {
         method: 'DELETE',
