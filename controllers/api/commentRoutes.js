@@ -11,7 +11,6 @@ router.post('/', withAuth, async (req, res) => {
       userid: req.session.user_id,
     });
 
-    console.log(newComment);
     req.flash('successMessage', 'Comment added successfully!');
     res.redirect(`/post/${req.body.post_id}`);
   } catch (err) {
