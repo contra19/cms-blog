@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const { User, BlogPost } = require('../../models');
 const bcrypt = require('bcrypt');
-const withAuth = require('../../middleware/auth');
 
 // Registration route
 router.post('/register', async (req, res) => {
@@ -22,13 +21,14 @@ router.post('/register', async (req, res) => {
       res.redirect('/dashboard');
     });
   } catch (err) {
-    res.status(400).json(err);
+    console.error('Error during registration:', err); 
+    req.flash('errorMessage', 'Error during registration: ' + err.message);
+    res.redirect('/register');
   }
 });
 
 // Login route
 router.post('/login', async (req, res) => {
-  console.log('Login route accessed: ', req.body.username);
   try {
     const userData = await User.findOne({ where: { username: req.body.username } });
 
@@ -52,7 +52,7 @@ router.post('/login', async (req, res) => {
     req.session.save(() => {
       req.session.user_id = userData.userid;
       req.session.logged_in = true;
-      console.log('User logged in:', req.session.user_id);
+      console.log('User logged in with id:', req.session.user_id);
       req.flash('successMessage', 'You are now logged in!');
       res.redirect('/dashboard');
     });
@@ -72,32 +72,6 @@ router.get('/logout', (req, res) => {
     });
   } else {
     res.status(404).end();
-  }
-});
-
-// Dashboard route
-router.get('/dashboard', withAuth, async (req, res) => {
-  console.log('Dashboard route accessed');
-  try {
-    const user = await User.findByPk(req.session.user_id, {
-      include: [{ model: BlogPost }],
-    });
-
-    if (!user) {
-      req.flash('errorMessage', 'User not found');
-      res.redirect('/login');
-      return;
-    }
-
-    const userPosts = user.BlogPosts.map((post) => post.get({ plain: true }));
-
-    res.render('dashboard', {
-      logged_in: req.session.logged_in,
-      user_id: req.session.user_id,
-      posts: userPosts,
-    });
-  } catch (err) {
-    res.status(500).json(err);
   }
 });
 
