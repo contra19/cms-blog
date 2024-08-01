@@ -6,6 +6,12 @@ let sequelize;
 if (process.env.DB_URL) {
   sequelize = new Sequelize(process.env.DB_URL, {
     dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false // This setting may be needed for Render
+      }
+    },
     logging: false,
   });
 } else {
@@ -16,9 +22,23 @@ if (process.env.DB_URL) {
     {
       host: process.env.DB_HOST,
       dialect: 'postgres',
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false // This setting may be needed for Render
+        }
+      },
       logging: false,
     }
   );
 }
+
+sequelize.authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 
 module.exports = sequelize;
