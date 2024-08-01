@@ -31,8 +31,7 @@ CMS Blog is a content management system designed for managing blog posts. It pro
 
 ## Installation
 
-This application is deployed on Render at 
-To run this application locally follow the instructions below:
+This application is deployed on Render at https://cms-blog-t3b8.onrender.com/. <br>To run this application locally follow the instructions below:</br>
 
 ### Prerequisites
 
