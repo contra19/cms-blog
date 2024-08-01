@@ -22,12 +22,6 @@ if (process.env.DB_URL) {
     {
       host: process.env.DB_HOST,
       dialect: 'postgres',
-      dialectOptions: {
-        ssl: {
-          require: true,
-          rejectUnauthorized: false // This setting may be needed for Render
-        }
-      },
       logging: false,
     }
   );
