@@ -134,5 +134,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Thanks to the contributors who helped make this project better.
-- Special thanks to [ChatGPT](https://openai.com/chatgpt) for assistance.
+- Thanks to my classmates [Tristin Rohr](https://github.com/TristinRohr) and [Nick Zamboni](https://github.com/ndzamboni) for letting me bounce ideas and questions off of them as I progressed throughout this project.
+- Special thanks to [ChatGPT](https://openai.com/chatgpt) for code review and helping when I got stuck.
